@@ -1,0 +1,44 @@
+%header%
+GRAMMARTYPE = "LL"
+DESCRIPTION = "Grammar for ongame players notes 'irf' files."
+AUTHOR      = "Ant"
+VERSION		= "1.1"
+DATE		= "02/02/2010"
+
+%tokens%
+LT					= "<"
+GT					= ">"
+EQUAL				= "="
+QUOTE				= <<["]>>
+PLAYER_NOTES		= "playernotes"
+PLAYER_NOTE_SET		= "playernoteset"
+USER_NAME			= <<username=[^\n]*>>
+PLAYER_NOTE			= "playernote"
+PLAYER_NAME			= "playername"
+NOTE_TEXT			= "notetext"
+TIMESTAMP			= "timestamp"
+CLASSIFICATION		= "classificationindex"
+NUMBER				= <<[0-9]*>>
+WHITESPACE          = <<[ \t\n\r]+>> %ignore%
+QUOTED_STRING       = <<("([^"\\]|\\.)*")>>
+IDENTIFIER			= <<[A-Za-z0-9_]*>>
+
+
+%productions%
+
+IrfDocument = RootNode;
+
+RootNode = LT PLAYER_NOTES [UserNode] GT;
+
+UserNode = LT PLAYER_NOTE_SET USER_NAME (PlayerNoteNode)+ GT;
+
+PlayerNoteNode = LT PLAYER_NOTE PlayerNameAttribute 
+				(NoteTextAttribute)? (TimestampAttribute)? (ClassificationAttribute)? GT;
+
+PlayerNameAttribute = PLAYER_NAME EQUAL QUOTED_STRING;
+
+NoteTextAttribute = NOTE_TEXT EQUAL QUOTED_STRING;
+
+TimestampAttribute = TIMESTAMP EQUAL QUOTED_STRING;
+
+ClassificationAttribute = CLASSIFICATION EQUAL QUOTED_STRING;
